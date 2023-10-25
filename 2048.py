@@ -5,8 +5,9 @@ import random
 import copy
 import os
 import neat
+import time
 
-def main(genomes, config):
+def eval_genomes(genomes, config):
     for i, genome in genomes:
         genome.fitness = 0
         net = neat.nn.FeedForwardNetwork.create(genome, config)
@@ -43,56 +44,62 @@ def main(genomes, config):
         window.blit(scoreboard, (50, 30))
 
         while run:
-            for event in pygame.event.get():
-                output = net.activate((score, boxes[0][0], boxes[0][1], boxes[0][2], boxes[0][3],
-                                              boxes[1][0], boxes[1][1], boxes[1][2], boxes[1][3],
-                                              boxes[2][0], boxes[2][1], boxes[2][2], boxes[2][3],
-                                              boxes[3][0], boxes[3][1], boxes[3][2], boxes[3][3]))
-                decision = output.index(max(output))
-                print(decision)
+            # time.sleep(.2)
+            # output = net.activate((score, boxes[0][0], boxes[0][1], boxes[0][2], boxes[0][3],
+            #                               boxes[1][0], boxes[1][1], boxes[1][2], boxes[1][3],
+            #                               boxes[2][0], boxes[2][1], boxes[2][2], boxes[2][3],
+            #                               boxes[3][0], boxes[3][1], boxes[3][2], boxes[3][3]))
+            output = net.activate((boxes[0][0], boxes[0][1], boxes[0][2], boxes[0][3],
+                                          boxes[1][0], boxes[1][1], boxes[1][2], boxes[1][3],
+                                          boxes[2][0], boxes[2][1], boxes[2][2], boxes[2][3],
+                                          boxes[3][0], boxes[3][1], boxes[3][2], boxes[3][3]))
+            decision = output.index(max(output))
+            
+            prevBoard = copy.deepcopy(boxes)
+            oldscore = score
+            if decision == 0:
+                score = moveLeft(window, boxes, score)
+            elif decision == 1:
+                score = moveRight(window, boxes, score)
+            elif decision == 2:
+                score = moveUp(window, boxes, score)
+            else:
+                score = moveDown(window, boxes, score)
 
-                if event.type == pygame.QUIT:
-                    run =False
-                    pygame.quit()
+            if not np.array_equal(prevBoard, boxes):
+                genome.fitness += 10
+                genome.fitness += score - oldscore
+                drawAll(window, boxes, score)
+                fillRandom()
+            else:
+                # print("Invalid")
+                genome.fitness = int(score)
+                # genome.fitness = int(genome.fitness)
+                print(f"score: {score}  fitness: {genome.fitness}")
+                run = False
+                # return genome
 
-                
-                prevBoard = copy.deepcopy(boxes)
-                if decision == 0:
-                    score = moveLeft(window, boxes, score)
-                elif decision == 1:
-                    score = moveRight(window, boxes, score)
-                elif decision == 2:
-                    score = moveUp(window, boxes, score)
-                else:
-                    score = moveDown(window, boxes, score)
+            
+            if checkLoss(boxes):
+                run = False
+                genome.fitness = int(genome.fitness) - 100
+                print("Loss")
+                print(f"score: {score}  fitness: {genome.fitness}")
+                my_font = pygame.font.SysFont('arial', 100, bold=True)
 
-                if not np.array_equal(prevBoard, boxes):
-                    genome.fitness += 1
-                    drawAll(window, boxes, score)
-                    fillRandom()
-                else:
-                    genome.fitness -= 1
-                    print("Invalid")
-                
-                if checkLoss(boxes):
-                    run = False
-                    print("Loss")
-                    print(score)
-                    my_font = pygame.font.SysFont('arial', 100, bold=True)
+                text_surface = my_font.render("You Lose", False, (0, 0, 0))
+                text_rect = text_surface.get_rect(center=(450/2, 450/2))
+                window.blit(text_surface, text_rect)
+                # return genome
+            
+            if checkWin(boxes):
+                print("Win")
+                print(score)
+                my_font = pygame.font.SysFont('arial', 100, bold=True)
 
-                    text_surface = my_font.render("You Lose", False, (0, 0, 0))
-                    text_rect = text_surface.get_rect(center=(450/2, 450/2))
-                    window.blit(text_surface, text_rect)
-                    return genome
-                
-                if checkWin(boxes):
-                    print("Win")
-                    print(score)
-                    my_font = pygame.font.SysFont('arial', 100, bold=True)
-
-                    text_surface = my_font.render("You Win", False, (0, 0, 0))
-                    text_rect = text_surface.get_rect(center=(450/2, 450/2))
-                    window.blit(text_surface, text_rect)
+                text_surface = my_font.render("You Win", False, (0, 0, 0))
+                text_rect = text_surface.get_rect(center=(450/2, 450/2))
+                window.blit(text_surface, text_rect)
             pygame.display.update()
         pygame.quit()
 
@@ -111,7 +118,7 @@ def run(config_file):
     p.add_reporter(stats)
 
     # Run for up to 10 generations.
-    winner = p.run(main, 10)
+    winner = p.run(eval_genomes, 50)
 
     # Display the winning genome.
     print('\nBest genome:\n{!s}'.format(winner))
