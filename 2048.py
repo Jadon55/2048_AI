@@ -119,7 +119,7 @@ def run(config_file):
     p.add_reporter(stats)
 
     # Run for up to 10 generations.
-    winner = p.run(eval_genomes, 5)
+    winner = p.run(eval_genomes, 50)
 
     # Display the winning genome.
     print('\nBest genome:\n{!s}'.format(winner))
@@ -130,8 +130,4 @@ if __name__=="__main__":
     run(config_path)
 
     df = pd.DataFrame(list(itertools.chain.from_iterable(data)), columns=["generation", "score", "fitness", "genome"])
-    genCount = len(df["generation"].unique())
-    for i in range(genCount):
-        print(f"Generation {i}")
-        print("    Average score: ", df.loc[df["generation"] == i]["score"].mean())
-        print("    Max score: ", df.loc[df["generation"] == i]["score"].max())
+    df.to_csv("generation_data.csv")
