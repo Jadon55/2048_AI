@@ -1,5 +1,5 @@
 import pygame
-from boxfunctions import clearBoard, getRandomBox, fillBox, moveUp, moveRight, moveDown, moveLeft, drawAll, checkLoss, checkWin
+from boxfunctions_p import clearBoard, getRandomBox, fillBox, moveUp, moveRight, moveDown, moveLeft, drawAll, checkLoss, checkWin
 import numpy as np
 import random
 import copy
