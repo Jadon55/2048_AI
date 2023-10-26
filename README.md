@@ -13,7 +13,7 @@ Uses a neat-python genetic algorithem to learn how to play the game 2048
 Functions used to move tiles in the game field (and array), check for win/loss, and calculate score
 
 ## config-neat.txt
-config file for Neat
+Config file for Neat
 - population size of 100
 - sigmoid activation function
 - 16 inputs and 4 outputs
