@@ -1,7 +1,7 @@
 # 2048 Neat-Python AI
 _NOTE: unfinshed_
 <br>
-##Files
+## Files
 ### PlayableGame
 Contains the same 2048 and boxfunctions files, but before the neat intragration.
 2048_p.py is a user playable version of the game that can be opperated by the arrow keys.
