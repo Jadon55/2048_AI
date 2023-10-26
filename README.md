@@ -17,3 +17,7 @@ Config file for Neat
 - population size of 100
 - sigmoid activation function
 - 16 inputs and 4 outputs
+
+# Progress
+The model has yet to spend much time training, but even so the models progress can be visualized
+![output](https://github.com/Jadon55/2048_AI/assets/78763124/f83d8236-77c5-4e85-96e0-47fb25fbe706)
