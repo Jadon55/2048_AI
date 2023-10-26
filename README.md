@@ -20,4 +20,4 @@ Config file for Neat
 
 # Progress
 The model has yet to spend much time training, but even so the models progress can be visualized
-![output](https://github.com/Jadon55/2048_AI/assets/78763124/f83d8236-77c5-4e85-96e0-47fb25fbe706)
+![output](https://github.com/Jadon55/2048_AI/assets/78763124/82638d81-e1cb-40d7-a314-e3e0bb201abd)
